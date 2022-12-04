@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gpt-j
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: gpt-j
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gpt-j
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: gpt-j
+    spec:
+      containers:
+      - name: gpt-j
+        image: {{ .Values.image }}:{{ .Values.version }}
+        ports:
+        - name: backend
+          containerPort: 5000
+          protocol: TCP
+        resources:
+          requests:
+            cpu: 500m
+            memory: 8000Mi
+            nvidia.com/gpu: "2"
+          limits:
+            memory: 16000Mi
+            nvidia.com/gpu: "2"
+        command: ["/bin/sh"]
+        args: ["-c", "./scripts/run_service.sh"]
+---

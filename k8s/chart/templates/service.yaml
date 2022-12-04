@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  namespace:  {{ .Values.namespace }}
+  name: gpt-j
+  labels:
+    app: gpt-j
+spec:
+  selector:
+    app: gpt-j
+  ports:
+  - name: backend
+    protocol: TCP
+    port: 5000
+    targetPort: backend
